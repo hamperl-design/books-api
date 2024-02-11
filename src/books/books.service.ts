@@ -6,6 +6,8 @@ import { BooksReadEntity } from './entities/books-read.entity'
 import { UpdateShelfDto } from '../shelfs/dto/update-shelf.dto'
 import { User } from '../user/entities/user.entity'
 import { BookStoredEntity } from './entities/book-stored.entity'
+import { BooksRateEntity } from './entities/books-rate.entity'
+import { BooksLendEntity } from './entities/books-lend.entity'
 
 @Injectable()
 export class BooksService {
@@ -15,7 +17,11 @@ export class BooksService {
     @InjectRepository(BooksReadEntity)
     private readonly bookReadRepository: Repository<BooksReadEntity>,
     @InjectRepository(BookStoredEntity)
-    private readonly bookStoredRepository: Repository<BookStoredEntity>
+    private readonly bookStoredRepository: Repository<BookStoredEntity>,
+    @InjectRepository(BooksRateEntity)
+    private readonly bookRateRepository: Repository<BooksRateEntity>,
+    @InjectRepository(BooksLendEntity)
+    private readonly bookLendRepository: Repository<BooksLendEntity>
   ) {}
 
   async create(bookDto: Book) {
@@ -87,6 +93,54 @@ export class BooksService {
     }
 
     Object.assign(bookStored, bookStoreDto)
-    return await this.bookRepository.save(bookStored)
+    return await this.bookStoredRepository.save(bookStored)
+  }
+
+  async createBookRate(bookRateDto: BooksRateEntity) {
+    const createBookRate = this.bookRateRepository.create(bookRateDto)
+    if (!createBookRate) {
+      throw new NotFoundException('Shelf could not be created')
+    }
+
+    return await this.bookRateRepository.save(createBookRate)
+  }
+  async findAllBookRates() {
+    return await this.bookRateRepository.find()
+  }
+  async findOneBookRate(id: number) {
+    return await this.bookRateRepository.findOneBy({ id })
+  }
+  async updateBookRate(id: number, bookRateDto: BooksRateEntity) {
+    const bookRateUpdate = await this.bookRateRepository.findOneBy({ id })
+    if (!bookRateUpdate) {
+      throw new NotFoundException('Shelf could not be updated')
+    }
+
+    Object.assign(bookRateUpdate, bookRateDto)
+    return await this.bookRateRepository.save(bookRateUpdate)
+  }
+
+  async createBookLend(booksLendDto: BooksLendEntity) {
+    const createBookLend = this.bookLendRepository.create(booksLendDto)
+    if (!createBookLend) {
+      throw new NotFoundException('Shelf could not be created')
+    }
+
+    return await this.bookLendRepository.save(createBookLend)
+  }
+  async findAllBookLends() {
+    return await this.bookLendRepository.find()
+  }
+  async findOneBookLend(id: number) {
+    return await this.bookLendRepository.findOneBy({ id })
+  }
+  async updateBookLend(id: number, booksLendDto: BooksLendEntity) {
+    const bookLendUpdate = await this.bookLendRepository.findOneBy({ id })
+    if (!bookLendUpdate) {
+      throw new NotFoundException('Shelf could not be updated')
+    }
+
+    Object.assign(bookLendUpdate, booksLendDto)
+    return await this.bookLendRepository.save(bookLendUpdate)
   }
 }

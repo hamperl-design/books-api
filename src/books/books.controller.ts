@@ -3,6 +3,8 @@ import { Book } from './entities/book.entity'
 import { BooksService } from './books.service'
 import { BooksReadEntity } from './entities/books-read.entity'
 import { BookStoredEntity } from './entities/book-stored.entity'
+import { BooksRateEntity } from './entities/books-rate.entity'
+import { BooksLendEntity } from './entities/books-lend.entity'
 
 @Controller('books')
 export class BooksController {
@@ -57,5 +59,39 @@ export class BooksController {
   @Patch('/store/:id')
   updateBookStore(@Param('id') id: string, @Body() updateBookStore: BookStoredEntity) {
     return this.bookService.updateBookStore(+id, updateBookStore)
+  }
+
+  @Post('/rate')
+  createBookRate(@Body() createBookRateDto: BooksRateEntity) {
+    return this.bookService.createBookRate(createBookRateDto)
+  }
+  @Get('/rate')
+  findAllBookRate() {
+    return this.bookService.findAllBookRates()
+  }
+  @Get('/rate/:id')
+  findOneBookRate(@Param('id') id: string) {
+    return this.bookService.findOneBookRate(+id)
+  }
+  @Patch('/rate/:id')
+  updateBookRate(@Param('id') id: string, @Body() updateBookRete: BooksRateEntity) {
+    return this.bookService.updateBookRate(+id, updateBookRete)
+  }
+
+  @Post('/rate')
+  createBookLend(@Body() createBookLendDto: BooksLendEntity) {
+    return this.bookService.createBookLend(createBookLendDto)
+  }
+  @Get('/rate')
+  findAllBookLend() {
+    return this.bookService.findAllBookLends()
+  }
+  @Get('/rate/:id')
+  findOneBookLend(@Param('id') id: string) {
+    return this.bookService.findOneBookLend(+id)
+  }
+  @Patch('/rate/:id')
+  updateBookLend(@Param('id') id: string, @Body() updateBookLend: BooksLendEntity) {
+    return this.bookService.updateBookLend(+id, updateBookLend)
   }
 }
