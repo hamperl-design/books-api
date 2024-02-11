@@ -5,6 +5,7 @@ import { Repository } from 'typeorm'
 import { BooksReadEntity } from './entities/books-read.entity'
 import { UpdateShelfDto } from '../shelfs/dto/update-shelf.dto'
 import { User } from '../user/entities/user.entity'
+import { BookStoredEntity } from './entities/book-stored.entity'
 
 @Injectable()
 export class BooksService {
@@ -12,7 +13,9 @@ export class BooksService {
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
     @InjectRepository(BooksReadEntity)
-    private readonly bookReadRepository: Repository<BooksReadEntity>
+    private readonly bookReadRepository: Repository<BooksReadEntity>,
+    @InjectRepository(BookStoredEntity)
+    private readonly bookStoredRepository: Repository<BookStoredEntity>
   ) {}
 
   async create(bookDto: Book) {
@@ -23,15 +26,12 @@ export class BooksService {
 
     return await this.bookRepository.save(bookDto)
   }
-
   async findAll() {
     return await this.bookRepository.find()
   }
-
   async findBookById(id: number): Promise<Book> {
     return await this.bookRepository.findOneBy({ id })
   }
-
   async update(id: number, bookDto: Book) {
     const book = await this.bookRepository.findOneBy({ id })
     if (!book) {
@@ -50,22 +50,43 @@ export class BooksService {
 
     return await this.bookReadRepository.save(createReadBook)
   }
-
   async findAllReadBooks() {
     return await this.bookReadRepository.find()
   }
-
   async findOneReadBook(id: number) {
     return await this.bookReadRepository.findOneBy({ id })
   }
-
   async updateReadBook(id: number, bookReadDto: BooksReadEntity) {
-    const bookRead = await this.bookRepository.findOneBy({ id })
+    const bookRead = await this.bookReadRepository.findOneBy({ id })
     if (!bookRead) {
       throw new NotFoundException('Shelf could not be updated')
     }
 
     Object.assign(bookRead, bookReadDto)
-    return await this.bookRepository.save(bookRead)
+    return await this.bookReadRepository.save(bookRead)
+  }
+
+  async createBookStore(bookStore: BookStoredEntity) {
+    const createBookStore = this.bookStoredRepository.create(bookStore)
+    if (!createBookStore) {
+      throw new NotFoundException('Shelf could not be created')
+    }
+
+    return await this.bookStoredRepository.save(createBookStore)
+  }
+  async findAllStoredBooks() {
+    return await this.bookStoredRepository.find()
+  }
+  async findOneBookStore(id: number) {
+    return await this.bookStoredRepository.findOneBy({ id })
+  }
+  async updateBookStore(id: number, bookStoreDto: BookStoredEntity) {
+    const bookStored = await this.bookStoredRepository.findOneBy({ id })
+    if (!bookStored) {
+      throw new NotFoundException('Shelf could not be updated')
+    }
+
+    Object.assign(bookStored, bookStoreDto)
+    return await this.bookRepository.save(bookStored)
   }
 }
